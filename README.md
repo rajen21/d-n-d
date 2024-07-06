@@ -23,6 +23,6 @@
 ### 2 `{_id: "inprogress", taskIds: []}`
 ### 3 `{_id: "completed", taskIds: []}`
 
-then just add title of tiles at + sign of every task
+then just add title of task at + sign and press enter and it will push the task into respective column
 it will add the task into the following task you can darg and drop the tasks in todo, inprogress, completed 
 
