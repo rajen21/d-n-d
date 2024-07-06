@@ -16,12 +16,14 @@ interface TaskManagerProps {
 const reorderColumnList = (sourceCol: Column, startInd: number, endInd: number) => {
   const newTaskIds = Array.from(sourceCol.taskIds);
   const [removed] = newTaskIds.splice(startInd, 1);
-  newTaskIds.splice(endInd, 0, removed);
-  const newColumn = {
-    ...sourceCol,
-    taskIds: newTaskIds,
+  if (!newTaskIds.includes(removed)) {
+    newTaskIds.splice(endInd, 0, removed);
+    const newColumn = {
+      ...sourceCol,
+      taskIds: newTaskIds,
+    }
+    return newColumn;
   }
-  return newColumn;
 }
 
 const TaskManager: React.FC<TaskManagerProps> = ({tasks, setTasks, setEditText}) => {
@@ -45,22 +47,25 @@ const TaskManager: React.FC<TaskManagerProps> = ({tasks, setTasks, setEditText})
         destination.index
       );
 
-      const newState = {
-        ...tasks,
-        columns: {
-          ...tasks.columns,
-          [newColumn.id]: newColumn,
-        }
-      };
-      
-      setTasks(newState);
-      subscribeToUpdateTasksUpdates(
-        newColumn.id, 
-        source.index, 
-        newColumn.id,
-        newColumn.taskIds[destination.index],
-        destination.index
-      );
+      if (newColumn) {
+        const newState = {
+          ...tasks,
+          columns: {
+            ...tasks.columns,
+            [newColumn.id]: newColumn,
+          }
+        };
+        
+        setTasks(newState);
+        subscribeToUpdateTasksUpdates(
+          newColumn.id, 
+          source.index, 
+          newColumn.id,
+          newColumn.taskIds[destination.index],
+          destination.index
+        );
+      }
+
       return;
     }
 
